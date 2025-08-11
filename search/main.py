@@ -1,11 +1,14 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 import uvicorn
 
 app = FastAPI()
 
 @app.get("/search")
-def serach():
+def search(request: Request):
+    tenant = request.headers.get("X-Tenant")
+    host = request.headers.get("Host")
     return {
         "message": "Placeholder search endpoint",
-        "status": "ok"
+        "status": "ok",
+        "tenant": tenant
     }
