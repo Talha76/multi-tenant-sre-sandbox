@@ -2,14 +2,10 @@ services:
     payment:
         container_name: payment-service
         build: ./payment
-        # ports:
-        #     - 8000:8000
 
     search:
         container_name: search-service
         build: ./search
-        # ports:
-        #     - 8001:8001
 
     nginx:
         container_name: nginx
