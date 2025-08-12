@@ -1,14 +1,13 @@
-from datetime import datetime
-import os
-import time
-from typing import Annotated
-from typing import Literal
-from fastapi import FastAPI, Request, Response, status
-
 import json
+import os
 import random
+import time
+from datetime import datetime
+from typing import Annotated, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, PastDatetime, model_validator
+from fastapi import FastAPI, HTTPException, Request, status
+from pydantic import (BaseModel, ConfigDict, Field, PastDatetime,
+                      model_validator)
 
 app = FastAPI()
 
@@ -44,20 +43,15 @@ def getTransactions():
 
 
 @app.get("/search")
-def getSearch(request: Request, response: Response):
+def getSearch(request: Request):
     serverUpStatus = random.choices([0, 1], weights=[35, 65])[0]
     if serverUpStatus == 0:
-        response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
-        return { "error": "Server is down" }
-    
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Server is down")
+
     q = request.query_params.get('q', '')
     qType = request.query_params.get('type', 'transaction-account')
     if qType not in ["transaction-account", "transaction", "account"]:
-        response.status_code = status.HTTP_400_BAD_REQUEST
-        return {
-            "error": "Invalid query type",
-            "message": "Please use one of the following query types: transaction, account, or omit this parameter"
-        }
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid query type. Use 'transaction', 'account' or omit this field.")
 
     transactions = getTransactions()
 
@@ -81,17 +75,17 @@ def getSearch(request: Request, response: Response):
     tenant = request.headers.get("X-Tenant")
     return {
         "tenant": tenant,
-        "results": results
+        "results": results,
+        "total": len(results),
     }
 
 
 @app.post("/search")
-def postSearch(request: Request, response: Response, searchBody: SearchBodyModel):
+def postSearch(searchBody: SearchBodyModel, request: Request):
     serverUpStatus = random.choices([0, 1], weights=[1, 9])[0]
     if serverUpStatus == 0:
-        response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
-        return { "error": "Server is down" }
-    
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Server is down")
+
     transactions = getTransactions()
     results = []
 
@@ -106,7 +100,9 @@ def postSearch(request: Request, response: Response, searchBody: SearchBodyModel
     delay = random.uniform(0.05, 1)
     time.sleep(delay)
 
+    tenant = request.headers.get('X-Tenant')
     return {
+        "tenant": tenant,
         "results": results,
         "total": len(results),
     }

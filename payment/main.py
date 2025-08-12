@@ -1,13 +1,13 @@
-import os
-from fastapi import FastAPI, Request, Response, status
-from pydantic import BaseModel, Field, PastDatetime, model_validator, ConfigDict
-from typing import Annotated, Literal
-from datetime import datetime
-
-import random
 import json
+import os
+import random
+from datetime import datetime
+from typing import Annotated, Literal
 from uuid import uuid4
 
+from fastapi import FastAPI, HTTPException, Request, status
+from pydantic import (BaseModel, ConfigDict, Field, PastDatetime,
+                      model_validator)
 
 app = FastAPI()
 
@@ -30,13 +30,10 @@ class TransactionModel(BaseModel):
 
 
 @app.post("/transfer")
-def transfer(request: Request, response: Response, transaction: TransactionModel):
+def transfer(request: Request, transaction: TransactionModel):
     serverUpStatus = random.choices([0, 1], weights=[1, 9])[0]
     if serverUpStatus == 0:
-        response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
-        return {
-            "error": "Server is down",
-        }
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Server is down")
 
     tenant = request.headers.get("X-Tenant")
     transactionData = transaction.model_dump(mode='json')
