@@ -6,10 +6,44 @@ from datetime import datetime
 from typing import Annotated, Literal
 
 from fastapi import FastAPI, HTTPException, Request, status
+from prometheus_client import Counter, Histogram
+from prometheus_fastapi_instrumentator import Instrumentator
 from pydantic import (BaseModel, ConfigDict, Field, PastDatetime,
                       model_validator)
 
 app = FastAPI()
+
+
+TENANT_REQUESTS = Counter(
+    "tenant_requests_total",
+    "Total number of requests per tenant",
+    ["tenant", "path", "method"]
+)
+TENANT_LATENCY = Histogram(
+    "tenant_request_latency_seconds",
+    "Request latency per tenant",
+    ["tenant", "path", "method"]
+)
+
+@app.middleware("http")
+async def metricsMiddleware(request: Request, callNext):
+    tenant = request.headers.get("X-Tenant", "unknown")
+    path = request.url.path
+    method = request.method
+    
+    TENANT_REQUESTS.labels(tenant, path, method).inc()
+    
+    start = time.perf_counter()
+    response = await callNext(request)
+    end = time.perf_counter()
+    latency = end - start
+    
+    TENANT_LATENCY.labels(tenant, path, method).observe(latency)
+    
+    return response
+
+Instrumentator().instrument(app).expose(app)
+
 
 PositiveFloat = Annotated[float, Field(gt=0)]
 
@@ -90,14 +124,14 @@ def postSearch(searchBody: SearchBodyModel, request: Request):
     results = []
 
     for trx in transactions:
-        trxTime = datetime.fromisoformat(trx["time"])
+        trxTime = datetime.fromisoformat(trx["time"]).replace(tzinfo=None)
         if searchBody.timeFrom <= trxTime <= searchBody.timeTo and \
            searchBody.amountFrom <= trx["amount"] <= searchBody.amountTo and \
            (searchBody.account == "" or searchBody.account == trx["fromAccount"] or searchBody.account == trx["toAccount"]) and \
            (searchBody.trxType == "" or searchBody.trxType == trx["trxType"]):
             results.append(trx)
 
-    delay = random.uniform(0.05, 1)
+    delay = random.uniform(0.05, 0.5)
     time.sleep(delay)
 
     tenant = request.headers.get('X-Tenant')

@@ -1,15 +1,50 @@
 import json
 import os
 import random
+import time
 from datetime import datetime
 from typing import Annotated, Literal
 from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException, Request, status
+from prometheus_client import Counter, Histogram
+from prometheus_fastapi_instrumentator import Instrumentator
 from pydantic import (BaseModel, ConfigDict, Field, PastDatetime,
                       model_validator)
 
 app = FastAPI()
+
+
+TENANT_REQUESTS = Counter(
+    "tenant_requests_total",
+    "Total number of requests per tenant",
+    ["tenant", "path", "method"]
+)
+TENANT_LATENCY = Histogram(
+    "tenant_request_latency_seconds",
+    "Request latency per tenant",
+    ["tenant", "path", "method"]
+)
+
+@app.middleware("http")
+async def metricsMiddleware(request: Request, callNext):
+    tenant = request.headers.get("X-Tenant", "unknown")
+    path = request.url.path
+    method = request.method
+    
+    TENANT_REQUESTS.labels(tenant, path, method).inc()
+    
+    start = time.perf_counter()
+    response = await callNext(request)
+    end = time.perf_counter()
+    latency = end - start
+    
+    TENANT_LATENCY.labels(tenant, path, method).observe(latency)
+    
+    return response
+
+Instrumentator().instrument(app).expose(app)
+
 
 AccountType = Annotated[str, Field(pattern=r"^[1-9][0-9]{7}")]
 
