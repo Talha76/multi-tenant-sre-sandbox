@@ -1,6 +1,7 @@
-from fastapi import FastAPI, Request
+import os
+from fastapi import FastAPI, Request, Response, status
 from pydantic import BaseModel, Field, PastDatetime, model_validator, ConfigDict
-from typing import Annotated
+from typing import Annotated, Literal
 from datetime import datetime
 
 import random
@@ -18,6 +19,7 @@ class TransactionModel(BaseModel):
     fromAccount: AccountType
     toAccount: AccountType
     amount: Annotated[float, Field(gt=0)]
+    trxType: Literal["mudarabah", "musharakah", "murabaha", "qard hasanah",  "ijarah", "sukuk"]
     time: PastDatetime
 
     @model_validator(mode='after')
@@ -28,30 +30,39 @@ class TransactionModel(BaseModel):
 
 
 @app.post("/transfer")
-def transfer(request: Request, transaction: TransactionModel):
-    serverUpStatus = random.choices([0, 1], weights=[35, 65])[0]
+def transfer(request: Request, response: Response, transaction: TransactionModel):
+    serverUpStatus = random.choices([0, 1], weights=[1, 9])[0]
     if serverUpStatus == 0:
-        raise Exception("Server is down")
+        response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+        return {
+            "error": "Server is down",
+        }
 
     tenant = request.headers.get("X-Tenant")
-    transaction_data = transaction.model_dump(mode='json')
-    transaction_data["tenant"] = tenant
-    transaction_data["trxId"] = str(uuid4())
+    transactionData = transaction.model_dump(mode='json')
+    transactionData["tenant"] = tenant
+    transactionData["trxId"] = str(uuid4())
+
+    data_path = os.path.join(os.getcwd(), "..", "data")
 
     try:
-        with open("./transactions.json") as f:
-            s = f.read()
-            transactions = json.loads(s)["transactions"] if s else []
+        with open(os.path.join(data_path, "transactions.json")) as f:
+            transactions = json.loads(f.read())["transactions"]
     except (json.JSONDecodeError, FileNotFoundError):
         transactions = []
 
-    transactions.append(transaction_data)
+    transactions.append(transactionData)
 
-    with open("./transactions.json", "w") as f:
+    if not os.path.exists(data_path):
+        os.makedirs(data_path)
+
+    print(os.path.join(data_path, "transactions.json"))
+    print(os.path.exists(data_path))
+    with open(os.path.join(data_path, "transactions.json"), "w") as f:
         f.write(json.dumps({ "transactions": transactions }, indent=2))
 
     return {
-        "trxId": transaction_data["trxId"],
+        "trxId": transactionData["trxId"],
         "status": "success",
         "timestamp": datetime.now(),
     }

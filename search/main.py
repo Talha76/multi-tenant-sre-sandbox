@@ -1,14 +1,112 @@
-from fastapi import FastAPI, Request
-import uvicorn
+from datetime import datetime
+import os
+import time
+from typing import Annotated
+from typing import Literal
+from fastapi import FastAPI, Request, Response, status
+
+import json
+import random
+
+from pydantic import BaseModel, ConfigDict, Field, PastDatetime, model_validator
 
 app = FastAPI()
 
+PositiveFloat = Annotated[float, Field(gt=0)]
+
+class SearchBodyModel(BaseModel):
+    model_config = ConfigDict(coerce_numbers_to_str=True, str_strip_whitespace=True)
+    
+    timeFrom: PastDatetime = datetime(1900, 1, 1)
+    timeTo: PastDatetime = Field(default_factory=datetime.now)
+    amountFrom: PositiveFloat = 0
+    amountTo: PositiveFloat = 1000000
+    account: Annotated[str, Field()] = ""
+    trxType: Literal["mudarabah", "musharakah", "murabaha", "qard hasanah",  "ijarah", "sukuk", ""] = ""
+    
+    @model_validator(mode='after')
+    def validateData(self):
+        if self.timeFrom > self.timeTo:
+            raise ValueError("timeFrom must be less than or equal to timeTo")
+        if self.amountFrom > self.amountTo:
+            raise ValueError("amountFrom must be less than or equal to amountTo")
+        return self
+
+
+def getTransactions():
+    data_path = os.path.join(os.getcwd(), "..", "data")
+    try:
+        with open(os.path.join(data_path, "transactions.json")) as f:
+            transactions = json.loads(f.read())["transactions"]
+    except (json.JSONDecodeError, FileNotFoundError):
+        transactions = []
+    return transactions
+
+
 @app.get("/search")
-def search(request: Request):
+def getSearch(request: Request, response: Response):
+    serverUpStatus = random.choices([0, 1], weights=[35, 65])[0]
+    if serverUpStatus == 0:
+        response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+        return { "error": "Server is down" }
+    
+    q = request.query_params.get('q', '')
+    qType = request.query_params.get('type', 'transaction-account')
+    if qType not in ["transaction-account", "transaction", "account"]:
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return {
+            "error": "Invalid query type",
+            "message": "Please use one of the following query types: transaction, account, or omit this parameter"
+        }
+
+    transactions = getTransactions()
+
+    trxIds = set()
+    for trx in transactions:
+        if "transaction" in qType:
+            if trx["trxType"] == q:
+                trxIds.add(trx["trxId"])
+        if "account" in qType:
+            if trx["fromAccount"] == q or trx["toAccount"] == q:
+                trxIds.add(trx["trxId"])
+    
+    results = []
+    for trx in transactions:
+        if trx["trxId"] in trxIds:
+            results.append(trx)
+
+    delay = random.uniform(0.05, 1)
+    time.sleep(delay)
+
     tenant = request.headers.get("X-Tenant")
-    host = request.headers.get("Host")
     return {
-        "message": "Placeholder search endpoint",
-        "status": "ok",
-        "tenant": tenant
+        "tenant": tenant,
+        "results": results
+    }
+
+
+@app.post("/search")
+def postSearch(request: Request, response: Response, searchBody: SearchBodyModel):
+    serverUpStatus = random.choices([0, 1], weights=[1, 9])[0]
+    if serverUpStatus == 0:
+        response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+        return { "error": "Server is down" }
+    
+    transactions = getTransactions()
+    results = []
+
+    for trx in transactions:
+        trxTime = datetime.fromisoformat(trx["time"])
+        if searchBody.timeFrom <= trxTime <= searchBody.timeTo and \
+           searchBody.amountFrom <= trx["amount"] <= searchBody.amountTo and \
+           (searchBody.account == "" or searchBody.account == trx["fromAccount"] or searchBody.account == trx["toAccount"]) and \
+           (searchBody.trxType == "" or searchBody.trxType == trx["trxType"]):
+            results.append(trx)
+
+    delay = random.uniform(0.05, 1)
+    time.sleep(delay)
+
+    return {
+        "results": results,
+        "total": len(results),
     }
