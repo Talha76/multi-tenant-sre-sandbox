@@ -5,7 +5,7 @@ import time
 from datetime import datetime
 from typing import Annotated, Literal
 
-from fastapi import FastAPI, HTTPException, Request, status
+from fastapi import FastAPI, HTTPException, Request, Response, status
 from prometheus_client import Counter, Histogram
 from prometheus_fastapi_instrumentator import Instrumentator
 from pydantic import (BaseModel, ConfigDict, Field, PastDatetime,
@@ -17,12 +17,12 @@ app = FastAPI()
 TENANT_REQUESTS = Counter(
     "tenant_requests_total",
     "Total number of requests per tenant",
-    ["tenant", "path", "method"]
+    ["tenant", "path", "method", "status"]
 )
 TENANT_LATENCY = Histogram(
     "tenant_request_latency_seconds",
     "Request latency per tenant",
-    ["tenant", "path", "method"]
+    ["tenant", "path", "method", "status"]
 )
 
 @app.middleware("http")
@@ -30,16 +30,15 @@ async def metricsMiddleware(request: Request, callNext):
     tenant = request.headers.get("X-Tenant", "unknown")
     path = request.url.path
     method = request.method
-    
-    TENANT_REQUESTS.labels(tenant, path, method).inc()
-    
     start = time.perf_counter()
-    response = await callNext(request)
+    response: Response = await callNext(request)
     end = time.perf_counter()
     latency = end - start
-    
-    TENANT_LATENCY.labels(tenant, path, method).observe(latency)
-    
+    status = str(response.status_code)
+
+    TENANT_REQUESTS.labels(tenant, path, method, status).inc()
+    TENANT_LATENCY.labels(tenant, path, method, status).observe(latency)
+
     return response
 
 Instrumentator().instrument(app).expose(app)
