@@ -1,37 +1,81 @@
 services:
-    payment:
-        container_name: payment-service
-        build: ./payment
-        volumes:
-            - ./payment:/app:ro
-            - ./data:/data
+  payment:
+    container_name: payment-service
+    build: ./payment
+    volumes:
+      - ./payment:/app:ro
+      - ./data:/data
 
-    search:
-        container_name: search-service
-        build: ./search
-        volumes:
-            - ./search:/app:ro
-            - ./data:/data
+  search:
+    container_name: search-service
+    build: ./search
+    volumes:
+      - ./search:/app:ro
+      - ./data:/data
 
-    nginx:
-        container_name: nginx
-        image: nginx
-        ports:
-            - 8000:80
-        depends_on:
-            - payment
-            - search
-        volumes:
-            - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  nginx:
+    container_name: nginx
+    image: nginx
+    ports:
+      - 8000:80
+    depends_on:
+      - payment
+      - search
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
 
-    prometheus:
-        image: prom/prometheus
-        container_name: prometheus
-        ports:
-            - 9090:9090
-        volumes:
-            - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
-            - ./prometheus-rules.yml:/etc/prometheus/prometheus-rules.yml:ro
-        command:
-            - '--web.enable-lifecycle'
-            - '--config.file=/etc/prometheus/prometheus.yml'
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus-rules.yml:/etc/prometheus/prometheus-rules.yml:ro
+    command:
+      - "--web.enable-lifecycle"
+      - "--config.file=/etc/prometheus/prometheus.yml"
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    command: -config.file=/etc/loki/local-config.yaml
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    depends_on:
+      - loki
+    volumes:
+      - ./log:/var/log
+    command: -config.file=/etc/promtail/config.yml
+
+  grafana:
+    container_name: grafana
+    environment:
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_FEATURE_TOGGLES_ENABLE=alertingSimplifiedRouting,alertingQueryAndExpressionsStepMode
+    entrypoint:
+      - sh
+      - -euc
+      - |
+        mkdir -p /etc/grafana/provisioning/datasources
+        cat <<EOF > /etc/grafana/provisioning/datasources/ds.yaml
+        apiVersion: 1
+        datasources:
+        - name: Loki
+          type: loki
+          access: proxy
+          orgId: 1
+          url: http://loki:3100
+          basicAuth: false
+          isDefault: true
+          version: 1
+          editable: false
+        EOF
+        /run.sh
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
