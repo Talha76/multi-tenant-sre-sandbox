@@ -63,10 +63,10 @@ def make_search_request() -> requests.Response:
     return requests.post("http://localhost:8000/transfer", json=request_data, headers={"Host": f"{tenant}.local"})
 
 if __name__ == '__main__':
-    for i in range(args.count):
-        if args.path == "/transfer" and not args.post:
-            print("Using POST method for /transfer path. Use --post flag to make POST requests.")
+    if args.path == "/transfer" and not args.post:
+        print("Using POST method for /transfer path. Use --post flag to make POST requests.")
 
+    for i in range(args.count):
         response: requests.Response = make_transfer_request() if args.path == "/transfer" else make_search_request()
         if response.ok:
             print(f"Request #{i + 1}, status code: {response.status_code}")

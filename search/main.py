@@ -4,6 +4,7 @@ import random
 import time
 from datetime import datetime
 from typing import Annotated, Literal
+from logger import logger
 
 from fastapi import FastAPI, HTTPException, Request, Response, status
 from prometheus_client import Counter, Histogram
@@ -33,9 +34,10 @@ async def metricsMiddleware(request: Request, callNext):
     start = time.perf_counter()
     response: Response = await callNext(request)
     end = time.perf_counter()
-    latency = end - start
-    status = str(response.status_code)
+    latency = round(end - start, 3)
+    status = response.status_code
 
+    logger.bind(tenant=tenant, route=path, status=status, duration=latency).info("Request processed")
     TENANT_REQUESTS.labels(tenant, path, method, status).inc()
     TENANT_LATENCY.labels(tenant, path, method, status).observe(latency)
 
@@ -59,9 +61,11 @@ class SearchBodyModel(BaseModel):
     @model_validator(mode='after')
     def validateData(self):
         if self.timeFrom > self.timeTo:
-            raise ValueError("timeFrom must be less than or equal to timeTo")
+            message = f"timeFrom ({self.timeFrom}) must be less than or equal to timeTo ({self.timeTo})"
+            raise ValueError(message)
         if self.amountFrom > self.amountTo:
-            raise ValueError("amountFrom must be less than or equal to amountTo")
+            message = f"amountFrom ({self.amountFrom}) must be less than or equal to amountTo ({self.amountTo})"
+            raise ValueError(message)
         return self
 
 

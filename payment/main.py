@@ -2,9 +2,11 @@ import json
 import os
 import random
 import time
+import sys
 from datetime import datetime
 from typing import Annotated, Literal
 from uuid import uuid4
+from logger import logger
 
 from fastapi import FastAPI, HTTPException, Request, Response, status
 from prometheus_client import Counter, Histogram
@@ -34,9 +36,10 @@ async def metricsMiddleware(request: Request, callNext):
     start = time.perf_counter()
     response: Response = await callNext(request)
     end = time.perf_counter()
-    latency = end - start
-    status = str(response.status_code)
+    latency = round(end - start, 3)
+    status = response.status_code
 
+    logger.bind(tenant=tenant, route=path, status=status, duration=latency).info("Request processed")
     TENANT_REQUESTS.labels(tenant, path, method, status).inc()
     TENANT_LATENCY.labels(tenant, path, method, status).observe(latency)
 
