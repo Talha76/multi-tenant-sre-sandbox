@@ -36,13 +36,13 @@ scrape_configs:
             - json:
                 expressions:
                   tenant: tenant
-                  route: route
+                  path: path
                   status: status
                   duration: duration
                   level: level
             - labels:
                 tenant:
-                route:
+                path:
                 status:
                 level:
                 duration:

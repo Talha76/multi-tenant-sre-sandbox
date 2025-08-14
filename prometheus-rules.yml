@@ -4,8 +4,11 @@ groups:
       - record: tenant_avg_latency_seconds:rate1m
         expr: (rate(tenant_request_latency_seconds_sum{path=~"/transfer|/search"}[1m])/rate(tenant_request_latency_seconds_count{path=~"/transfer|/search"}[1m]))
 
-      - record: tenant_error_rate:rate1m
+      - record: total_error_rate:rate1m
         expr: sum(rate(tenant_requests_total{status="503"}[1m])) / sum(rate(tenant_requests_total[1m]))
 
       - alert: high_error_rate
         expr: tenant_error_rate:rate1m > 0.1
+
+      - record: tenant_error_rate:rate1m
+        expr: sum by(tenant) (rate(tenant_requests_total{status=~"[4|5].."}[1m])) / sum by (tenant) (rate(tenant_requests_total[1m])) * 100

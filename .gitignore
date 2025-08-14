@@ -1,5 +1,4 @@
 data
 env
 __pycache__
-*.json
 log

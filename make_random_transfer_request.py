@@ -35,21 +35,15 @@ def make_transfer_request() -> requests.Response:
     return requests.post("http://localhost:8000/transfer", json=request_data, headers={"Host": f"{tenant}.local"})
 
 def make_search_request() -> requests.Response:
-    return requests.Response()
-    account = f"{random.randint(10000000, 99999999)}" if random.randint(0, 1) else None
-    from_amount = random.uniform(0, 100000.0) if random.randint(0, 1) else None
-    to_amount = random.uniform(from_amount if from_amount else 0, 100000.0) if random.randint(0, 1) else None
-    from_date = (datetime.now(timezone.utc) - timedelta(days=random.randint(1, 100))) if random.randint(0, 1) else None
-    to_date = min(datetime.now(), ((from_date) + timedelta(days=random.randint(1, 30)))) if from_date else None
-    trx_type = random.choice(["mudarabah", "musharakah", "murabaha", "qard hasanah", "ijarah", "sukuk"])
-    time = datetime.now(timezone.utc).isoformat()
+    # account = f"{random.randint(10000000, 99999999)}" if random.randint(0, 1) else None
+    # from_amount = random.uniform(0, 100000.0) if random.randint(0, 1) else None
+    # to_amount = random.uniform(from_amount if from_amount else 0, 100000.0) if random.randint(0, 1) else None
+    # from_date = (datetime.now(timezone.utc) - timedelta(days=random.randint(1, 100))) if random.randint(0, 1) else None
+    # to_date = min(datetime.now(), ((from_date) + timedelta(days=random.randint(1, 30)))) if from_date else None
+    # trx_type = random.choice(["mudarabah", "musharakah", "murabaha", "qard hasanah", "ijarah", "sukuk"])
+    # time = datetime.now(timezone.utc).isoformat()
 
     request_data = {
-        "fromAccount": from_account,
-        "toAccount": to_account,
-        "amount": amount,
-        "trxType": trx_type,
-        "time": time
     }
     
     tenant_id = random.randint(0, 2)
@@ -60,7 +54,9 @@ def make_search_request() -> requests.Response:
     else:
         tenant = "gamma"
 
-    return requests.post("http://localhost:8000/transfer", json=request_data, headers={"Host": f"{tenant}.local"})
+    return requests.post("http://localhost:8000/search", json=request_data, headers={"Host": f"{tenant}.local"}) \
+           if args.post else \
+           requests.get("http://localhost:8000/search", headers={"Host": f"{tenant}.local"})
 
 if __name__ == '__main__':
     if args.path == "/transfer" and not args.post:
