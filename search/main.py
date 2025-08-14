@@ -106,9 +106,6 @@ def getSearch(request: Request):
         if trx["trxId"] in trxIds:
             results.append(trx)
 
-    delay = random.uniform(0.05, 1)
-    time.sleep(delay)
-
     tenant = request.headers.get("X-Tenant")
     return {
         "tenant": tenant,
@@ -133,9 +130,6 @@ def postSearch(searchBody: SearchBodyModel, request: Request):
            (searchBody.account == "" or searchBody.account == trx["fromAccount"] or searchBody.account == trx["toAccount"]) and \
            (searchBody.trxType == "" or searchBody.trxType == trx["trxType"]):
             results.append(trx)
-
-    delay = random.uniform(0.05, 0.5)
-    time.sleep(delay)
 
     tenant = request.headers.get('X-Tenant')
     return {
