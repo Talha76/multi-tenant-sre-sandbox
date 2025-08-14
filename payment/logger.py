@@ -8,7 +8,7 @@ def json_sink(message):
         "level": record["level"].name,
         "text": record["message"],
         "tenant": record["extra"].get("tenant", "unknown"),
-        "route": record["extra"].get("route", ""),
+        "path": record["extra"].get("path", ""),
         "status": record["extra"].get("status", "-1"),
         "duration": record["extra"].get("duration", 0),
     }

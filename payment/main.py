@@ -39,7 +39,7 @@ async def metricsMiddleware(request: Request, callNext):
     latency = round(end - start, 3)
     status = response.status_code
 
-    logger.bind(tenant=tenant, route=path, status=status, duration=latency).info("Request processed")
+    logger.bind(tenant=tenant, path=path, status=status, duration=latency).info("Request processed")
     TENANT_REQUESTS.labels(tenant, path, method, status).inc()
     TENANT_LATENCY.labels(tenant, path, method, status).observe(latency)
 
