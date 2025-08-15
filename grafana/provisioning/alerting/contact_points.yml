@@ -1,0 +1,12 @@
+apiVersion: 1
+
+contactPoints:
+  - orgId: 1
+    name: Slack alert
+    receivers:
+      - uid: cev17vplel24ge
+        type: slack
+        settings:
+          recipient: temp
+          url: https://hooks.slack.com/services/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
+        disableResolveMessage: false
