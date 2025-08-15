@@ -1,78 +1,155 @@
 apiVersion: 1
 groups:
-    - orgId: 1
-      name: temporary
-      folder: alert-rules
-      interval: 1m
-      rules:
-        - uid: fev1a07gxca9sa
-          title: Availability
-          condition: A
-          data:
-            - refId: Availability
-              relativeTimeRange:
-                from: 1800
-                to: 0
-              datasourceUid: P1809F7CD0C75ACF3
-              model:
-                adhocFilters: []
-                datasource:
-                    type: prometheus
-                    uid: P1809F7CD0C75ACF3
-                editorMode: code
-                expr: |-
-                    sum(
-                        rate(
-                            tenant_requests_total{path!="/metrics",status!~"[4|5].."}[$__rate_interval]
-                        )
-                    )
-                    /
-                    sum(
-                        rate(
-                            tenant_requests_total{path!="/metrics"}[$__rate_interval]
-                        )
-                    ) * 100 > 90
-                instant: true
-                interval: ""
-                intervalMs: 15000
-                legendFormat: __auto
-                maxDataPoints: 43200
-                range: false
-                refId: Availability
-            - refId: A
-              datasourceUid: __expr__
-              model:
-                conditions:
-                    - evaluator:
-                        params: []
-                        type: gt
-                      operator:
-                        type: and
-                      query:
-                        params:
-                            - A
-                      reducer:
-                        params: []
-                        type: last
-                      type: query
-                datasource:
-                    type: __expr__
-                    uid: __expr__
-                expression: Availability
-                intervalMs: 1000
-                maxDataPoints: 43200
-                reducer: last
-                refId: A
-                type: reduce
-          dashboardUid: fc219930-598c-44e5-bb1b-91b99bbd339f
-          panelId: 26
-          noDataState: NoData
-          execErrState: Error
-          annotations:
-            __dashboardUid__: fc219930-598c-44e5-bb1b-91b99bbd339f
-            __panelId__: "26"
-            summary: Availability below 90%.
-          labels: {}
-          isPaused: false
-          notification_settings:
-            receiver: Slack alert
+  - name: temporary
+    orgId: 1
+    folder: alert-rules
+    interval: 1m
+    rules:
+      - uid: fev1a07gxca9sa
+        title: Availability
+        condition: A
+        data:
+          - refId: Availability
+            relativeTimeRange:
+              from: 1800
+              to: 0
+            datasourceUid: P1809F7CD0C75ACF3
+            model:
+              adhocFilters: []
+              datasource:
+                  type: prometheus
+                  uid: P1809F7CD0C75ACF3
+              editorMode: code
+              expr: |-
+                  sum(
+                      rate(
+                          tenant_requests_total{path!="/metrics",status!~"[4|5].."}[$__rate_interval]
+                      )
+                  )
+                  /
+                  sum(
+                      rate(
+                          tenant_requests_total{path!="/metrics"}[$__rate_interval]
+                      )
+                  ) * 100 > 90
+              instant: true
+              interval: ""
+              intervalMs: 15000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: false
+              refId: Availability
+          - refId: A
+            datasourceUid: __expr__
+            model:
+              conditions:
+                  - evaluator:
+                      params: []
+                      type: gt
+                    operator:
+                      type: and
+                    query:
+                      params:
+                          - A
+                    reducer:
+                      params: []
+                      type: last
+                    type: query
+              datasource:
+                  type: __expr__
+                  uid: __expr__
+              expression: Availability
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: A
+              type: reduce
+        dashboardUid: fc219930-598c-44e5-bb1b-91b99bbd339f
+        panelId: 26
+        noDataState: NoData
+        execErrState: Error
+        annotations:
+          __dashboardUid__: fc219930-598c-44e5-bb1b-91b99bbd339f
+          __panelId__: "26"
+          summary: Availability below 90%.
+        labels: {}
+        isPaused: false
+        notification_settings:
+          receiver: Slack alert
+
+  - name: availability per service
+    orgId: 1
+    folder: alert-rules
+    interval: 1m
+    rules:
+      - uid: fev1ox5f1g9a8c
+        title: Availability per service
+        condition: A
+        data:
+          - refId: Availability
+            relativeTimeRange:
+              from: 1800
+              to: 0
+            datasourceUid: P1809F7CD0C75ACF3
+            model:
+              adhocFilters: []
+              datasource:
+                  type: prometheus
+                  uid: P1809F7CD0C75ACF3
+              editorMode: code
+              expr: |-
+                  sum by (job) (
+                      rate(
+                          tenant_requests_total{path!="/metrics",status!~"[4|5].."}[$__rate_interval]
+                      )
+                  )
+                  /
+                  sum by (job) (
+                      rate(
+                          tenant_requests_total{path!="/metrics"}[$__rate_interval]
+                      )
+                  ) * 100 < 90
+              instant: true
+              interval: ""
+              intervalMs: 15000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: false
+              refId: Availability
+          - refId: A
+            datasourceUid: __expr__
+            model:
+              conditions:
+                  - evaluator:
+                      params: []
+                      type: gt
+                    operator:
+                      type: and
+                    query:
+                      params:
+                          - A
+                    reducer:
+                      params: []
+                      type: last
+                    type: query
+              datasource:
+                  type: __expr__
+                  uid: __expr__
+              expression: Availability
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: A
+              type: reduce
+        dashboardUid: fc219930-598c-44e5-bb1b-91b99bbd339f
+        panelId: 27
+        noDataState: NoData
+        execErrState: Error
+        for: 1m
+        annotations:
+          __dashboardUid__: fc219930-598c-44e5-bb1b-91b99bbd339f
+          __panelId__: "27"
+        labels: {}
+        isPaused: false
+        notification_settings:
+          receiver: Slack alert
