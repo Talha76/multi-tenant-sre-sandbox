@@ -71,9 +71,9 @@ class TransactionModel(BaseModel):
 
 @app.post("/transfer")
 def transfer(request: Request, transaction: TransactionModel):
-    # serverUpStatus = random.choices([0, 1], weights=[1, 9])[0]
-    # if serverUpStatus == 0:
-    #     raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Server is down")
+    serverUpStatus = random.choices([0, 1], weights=[5, 995])[0]
+    if serverUpStatus == 0:
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Server is down")
 
     tenant = request.headers.get("X-Tenant")
     transactionData = transaction.model_dump(mode='json')
