@@ -39,7 +39,10 @@ async def metricsMiddleware(request: Request, callNext):
     latency = round(end - start, 3)
     status = response.status_code
 
-    logger.bind(tenant=tenant, path=path, status=status, duration=latency).info("Request processed")
+    if 200 <= response.status_code < 400:
+        logger.bind(tenant=tenant, path=path, status=status, duration=latency).info("Request successful")
+    else:
+        logger.bind(tenant=tenant, path=path, status=status, duration=latency).error("Request failed")
     TENANT_REQUESTS.labels(tenant, path, method, status).inc()
     TENANT_LATENCY.labels(tenant, path, method, status).observe(latency)
 
@@ -68,9 +71,9 @@ class TransactionModel(BaseModel):
 
 @app.post("/transfer")
 def transfer(request: Request, transaction: TransactionModel):
-    serverUpStatus = random.choices([0, 1], weights=[1, 9])[0]
-    if serverUpStatus == 0:
-        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Server is down")
+    # serverUpStatus = random.choices([0, 1], weights=[1, 9])[0]
+    # if serverUpStatus == 0:
+    #     raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Server is down")
 
     tenant = request.headers.get("X-Tenant")
     transactionData = transaction.model_dump(mode='json')
