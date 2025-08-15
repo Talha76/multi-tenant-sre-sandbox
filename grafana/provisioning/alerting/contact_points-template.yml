@@ -8,5 +8,5 @@ contactPoints:
         type: slack
         settings:
           recipient: temp
-          url: https://hooks.slack.com/services/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
+          url: ${SLACK_WEBHOOK}
         disableResolveMessage: false
