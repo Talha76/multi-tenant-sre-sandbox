@@ -1,0 +1,306 @@
+apiVersion: 1
+groups:
+    - name: inteval_1m
+      folder: alert-rules
+      interval: 1m
+      rules:
+        - uid: cev3ia4jw191ca
+          title: Availability per service
+          condition: B
+          data:
+            - refId: Availability
+              relativeTimeRange:
+                from: 300
+                to: 0
+              datasourceUid: P1809F7CD0C75ACF3
+              model:
+                adhocFilters: []
+                datasource:
+                    type: prometheus
+                    uid: P1809F7CD0C75ACF3
+                editorMode: code
+                exemplar: false
+                expr: |-
+                    sum by (job) (
+                        rate(
+                            tenant_requests_total{path!="/metrics",status!~"[4|5].."}[$__rate_interval]
+                        )
+                    )
+                    /
+                    sum by (job) (
+                        rate(
+                            tenant_requests_total{path!="/metrics"}[$__rate_interval]
+                        )
+                    ) * 100
+                instant: true
+                interval: ""
+                intervalMs: 15000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: Availability
+            - refId: B
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 99.5
+                            - 0
+                        type: lt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: avg
+                      type: query
+                      unloadEvaluator:
+                        params:
+                            - 99.9
+                            - 0
+                        type: gt
+                datasource:
+                    name: Expression
+                    type: __expr__
+                    uid: __expr__
+                expression: Availability
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: B
+                type: threshold
+          dashboardUid: fc219930-598c-44e5-bb1b-91b99bbd339f
+          panelId: 27
+          noDataState: NoData
+          execErrState: Error
+          for: 1m
+          annotations:
+            __dashboardUid__: fc219930-598c-44e5-bb1b-91b99bbd339f
+            __panelId__: "27"
+            summary: Availability per service must be at least 99.9%
+          isPaused: false
+          notification_settings:
+            receiver: Slack alert
+        - uid: aev3jsfkhlrlsb
+          title: Availability
+          condition: Availability Threshold
+          data:
+            - refId: Availability
+              relativeTimeRange:
+                from: 900
+                to: 0
+              datasourceUid: P1809F7CD0C75ACF3
+              model:
+                adhocFilters: []
+                datasource:
+                    type: prometheus
+                    uid: P1809F7CD0C75ACF3
+                editorMode: code
+                expr: |-
+                    sum(
+                        rate(
+                            tenant_requests_total{path!="/metrics",status!~"[4|5].."}[$__rate_interval]
+                        )
+                    )
+                    /
+                    sum(
+                        rate(
+                            tenant_requests_total{path!="/metrics"}[$__rate_interval]
+                        )
+                    ) * 100
+                instant: true
+                interval: ""
+                intervalMs: 15000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: Availability
+            - refId: Availability Threshold
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 99.5
+                            - 0
+                        type: lt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: avg
+                      type: query
+                      unloadEvaluator:
+                        params:
+                            - 99.5
+                            - 0
+                        type: gt
+                datasource:
+                    name: Expression
+                    type: __expr__
+                    uid: __expr__
+                expression: Availability
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: Availability Threshold
+                type: threshold
+          dashboardUid: fc219930-598c-44e5-bb1b-91b99bbd339f
+          panelId: 26
+          noDataState: NoData
+          execErrState: Error
+          for: 1m
+          annotations:
+            __dashboardUid__: fc219930-598c-44e5-bb1b-91b99bbd339f
+            __panelId__: "26"
+            summary: Availability must be at least 99.5%
+          isPaused: false
+          notification_settings:
+            receiver: Slack alert
+        - uid: fev3k4958tp1cb
+          title: p95 latency
+          condition: p95 Threshold
+          data:
+            - refId: p95 latency
+              relativeTimeRange:
+                from: 900
+                to: 0
+              datasourceUid: P1809F7CD0C75ACF3
+              model:
+                adhocFilters: []
+                datasource:
+                    type: prometheus
+                    uid: P1809F7CD0C75ACF3
+                editorMode: code
+                expr: |-
+                    histogram_quantile(
+                      0.95,
+                      sum by (le) (
+                        rate(tenant_request_latency_seconds_bucket{path!="/metrics"}[$__rate_interval])
+                      )
+                    ) * 1000
+                instant: true
+                interval: ""
+                intervalMs: 15000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: p95 latency
+            - refId: p95 Threshold
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 5
+                            - 0
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: avg
+                      type: query
+                      unloadEvaluator:
+                        params:
+                            - 5
+                            - 0
+                        type: lt
+                datasource:
+                    name: Expression
+                    type: __expr__
+                    uid: __expr__
+                expression: p95 latency
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: p95 Threshold
+                type: threshold
+          dashboardUid: fc219930-598c-44e5-bb1b-91b99bbd339f
+          panelId: 11
+          noDataState: NoData
+          execErrState: Error
+          for: 1m
+          annotations:
+            __dashboardUid__: fc219930-598c-44e5-bb1b-91b99bbd339f
+            __panelId__: "11"
+            summary: Latency of 95% requests  must be less than or equal to 5ms
+          isPaused: false
+          notification_settings:
+            receiver: Slack alert
+        - uid: bev3nhcj3w4xsf
+          title: p99 latency
+          condition: p99 Threshold
+          data:
+            - refId: p99 latency
+              relativeTimeRange:
+                from: 900
+                to: 0
+              datasourceUid: P1809F7CD0C75ACF3
+              model:
+                adhocFilters: []
+                datasource:
+                    type: prometheus
+                    uid: P1809F7CD0C75ACF3
+                editorMode: code
+                expr: |-
+                    histogram_quantile(
+                      0.99,
+                      sum by (le) (
+                        rate(tenant_request_latency_seconds_bucket{path!="/metrics"}[$__rate_interval])
+                      )
+                    ) * 1000
+                instant: true
+                interval: ""
+                intervalMs: 15000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: p99 latency
+            - refId: p99 Threshold
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 350
+                            - 0
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: avg
+                      type: query
+                      unloadEvaluator:
+                        params:
+                            - 350
+                            - 0
+                        type: lt
+                datasource:
+                    name: Expression
+                    type: __expr__
+                    uid: __expr__
+                expression: p99 latency
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: p99 Threshold
+                type: threshold
+          dashboardUid: fc219930-598c-44e5-bb1b-91b99bbd339f
+          panelId: 9
+          noDataState: NoData
+          execErrState: Error
+          for: 1m
+          annotations:
+            __dashboardUid__: fc219930-598c-44e5-bb1b-91b99bbd339f
+            __panelId__: "9"
+            summary: Latency of 99% requests must not exceed 350ms
+          isPaused: false
+          notification_settings:
+            receiver: Slack alert
