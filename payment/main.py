@@ -1,10 +1,11 @@
+import csv
 import json
 import os
 import random
 import time
 import sys
 from datetime import datetime
-from typing import Annotated, Literal
+from typing import Annotated, Awaitable, Callable, Literal
 from uuid import uuid4
 from logger import logger
 
@@ -29,20 +30,33 @@ TENANT_LATENCY = Histogram(
 )
 
 @app.middleware("http")
-async def metricsMiddleware(request: Request, callNext):
+async def metricsMiddleware(request: Request, callNext: Callable[[Request], Awaitable[Response]]):
     tenant = request.headers.get("X-Tenant", "unknown")
     path = request.url.path
     method = request.method
     start = time.perf_counter()
     response: Response = await callNext(request)
-    end = time.perf_counter()
-    latency = round(end - start, 3)
+    latency = round(time.perf_counter() - start, 3)
     status = response.status_code
 
+    boundLogger = logger.bind(tenant=tenant, path=path, status=status, duration=latency)
+
     if 200 <= response.status_code < 400:
-        logger.bind(tenant=tenant, path=path, status=status, duration=latency).info("Request successful")
+        boundLogger.info("Request successful")
     else:
-        logger.bind(tenant=tenant, path=path, status=status, duration=latency).error("Request failed")
+        bodyChunks = []
+        iterator = response.body_iterator # type: ignore
+        async def asyncBodyIterator():
+            nonlocal bodyChunks, response
+            async for chunk in iterator:
+                bodyChunks.append(chunk)
+                yield chunk
+            body = b''.join(bodyChunks).decode()
+            bodyObj = json.loads(body)
+            boundLogger.error(bodyObj["detail"])
+
+        response.body_iterator = asyncBodyIterator() # type: ignore
+
     TENANT_REQUESTS.labels(tenant, path, method, status).inc()
     TENANT_LATENCY.labels(tenant, path, method, status).observe(latency)
 
@@ -79,22 +93,18 @@ def transfer(request: Request, transaction: TransactionModel):
     transactionData = transaction.model_dump(mode='json')
     transactionData["tenant"] = tenant
     transactionData["trxId"] = str(uuid4())
+    transactionData["time"] = datetime.strftime(transaction.time, "%Y-%m-%d %H:%M:%S.%f")[:-3]
 
     data_path = os.path.join(os.getcwd(), "..", "data")
-
-    try:
-        with open(os.path.join(data_path, "transactions.json")) as f:
-            transactions = json.loads(f.read())["transactions"]
-    except (json.JSONDecodeError, FileNotFoundError):
-        transactions = []
-
-    transactions.append(transactionData)
 
     if not os.path.exists(data_path):
         os.makedirs(data_path)
 
-    with open(os.path.join(data_path, "transactions.json"), "w") as f:
-        f.write(json.dumps({ "transactions": transactions }, indent=2))
+    with open(os.path.join(data_path, "transactions.csv"), "a") as f:
+        writer = csv.DictWriter(f, fieldnames=transactionData.keys())
+        if f.tell() == 0:
+            writer.writeheader()
+        writer.writerow(transactionData)
 
     return {
         "trxId": transactionData["trxId"],

@@ -1,3 +1,4 @@
+import csv
 import json
 import os
 import random
@@ -37,10 +38,24 @@ async def metricsMiddleware(request: Request, callNext: Callable[[Request], Awai
     latency = round(time.perf_counter() - start, 3)
     status = response.status_code
 
+    boundLogger = logger.bind(tenant=tenant, path=path, status=status, duration=latency)
+
     if 200 <= response.status_code < 400:
-        logger.bind(tenant=tenant, path=path, status=status, duration=latency).info("Request successful")
+        boundLogger.info("Request successful")
     else:
-        logger.bind(tenant=tenant, path=path, status=status, duration=latency).error("Request failed")
+        bodyChunks = []
+        iterator = response.body_iterator # type: ignore
+        async def asyncBodyIterator():
+            nonlocal bodyChunks, response
+            async for chunk in iterator:
+                bodyChunks.append(chunk)
+                yield chunk
+            body = b''.join(bodyChunks).decode()
+            bodyObj = json.loads(body)
+            boundLogger.error(bodyObj["detail"])
+
+        response.body_iterator = asyncBodyIterator() # type: ignore
+
     TENANT_REQUESTS.labels(tenant, path, method, status).inc()
     TENANT_LATENCY.labels(tenant, path, method, status).observe(latency)
 
@@ -75,41 +90,38 @@ class SearchBodyModel(BaseModel):
 def getTransactions():
     data_path = os.path.join(os.getcwd(), "..", "data")
     try:
-        with open(os.path.join(data_path, "transactions.json")) as f:
-            transactions = json.loads(f.read())["transactions"]
-    except (json.JSONDecodeError, FileNotFoundError):
-        transactions = []
-    return transactions
+        with open(os.path.join(data_path, "transactions.csv")) as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                row["amount"] = float(row["amount"])
+                row["time"] = datetime.strptime(row["time"], "%Y-%m-%d %H:%M:%S.%f").replace(tzinfo=None)
+                yield row
+    except FileNotFoundError:
+        return
 
 
 @app.get("/search")
 def getSearch(request: Request):
     serverUpStatus = random.choices([0, 1], weights=[5, 995])[0]
     if serverUpStatus == 0:
-        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Server is down")
+        raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "Server is down")
 
     q = request.query_params.get('q', '')
     qType = request.query_params.get('type', 'transaction-account')
     if qType not in ["transaction-account", "transaction", "account"]:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid query type. Use 'transaction', 'account' or omit this field.")
-
-    transactions = getTransactions()
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "Invalid query type. Use 'transaction', 'account' or omit this field.")
 
     trxIds = set()
-    for trx in transactions:
+    results = []
+    for trx in getTransactions():
         if "transaction" in qType:
             if q == "" or trx["trxType"] == q:
-                trxIds.add(trx["trxId"])
+                results.append(trx) if trx["trxId"] not in trxIds else None
         if "account" in qType:
             if q == "" or trx["fromAccount"] == q or trx["toAccount"] == q:
-                trxIds.add(trx["trxId"])
-    
-    results = []
-    for trx in transactions:
-        if trx["trxId"] in trxIds:
-            results.append(trx)
+                results.append(trx) if trx["trxId"] not in trxIds else None
+        trxIds.add(trx["trxId"])
 
-    tenant = request.headers.get("X-Tenant")
     return {
         "total": len(results),
         "results": results,
@@ -122,12 +134,9 @@ def postSearch(searchBody: SearchBodyModel, request: Request):
     if serverUpStatus == 0:
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Server is down")
 
-    transactions = getTransactions()
     results = []
-
-    for trx in transactions:
-        trxTime = datetime.fromisoformat(trx["time"]).replace(tzinfo=None)
-        if searchBody.timeFrom <= trxTime <= searchBody.timeTo and \
+    for trx in getTransactions():
+        if searchBody.timeFrom <= trx["time"] <= searchBody.timeTo and \
            searchBody.amountFrom <= trx["amount"] <= searchBody.amountTo and \
            (searchBody.account == "" or searchBody.account == trx["fromAccount"] or searchBody.account == trx["toAccount"]) and \
            (searchBody.trxType == "" or searchBody.trxType == trx["trxType"]):
