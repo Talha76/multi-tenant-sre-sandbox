@@ -9,6 +9,7 @@ from logger import logger
 from fastapi import FastAPI, HTTPException, Request, Response, status
 from prometheus_client import Counter, Histogram
 from prometheus_fastapi_instrumentator import Instrumentator
+from typing import Callable, Awaitable
 from pydantic import (BaseModel, ConfigDict, Field, PastDatetime,
                       model_validator)
 
@@ -27,14 +28,13 @@ TENANT_LATENCY = Histogram(
 )
 
 @app.middleware("http")
-async def metricsMiddleware(request: Request, callNext):
+async def metricsMiddleware(request: Request, callNext: Callable[[Request], Awaitable[Response]]):
     tenant = request.headers.get("X-Tenant", "unknown")
     path = request.url.path
     method = request.method
     start = time.perf_counter()
     response: Response = await callNext(request)
-    end = time.perf_counter()
-    latency = round(end - start, 3)
+    latency = round(time.perf_counter() - start, 3)
     status = response.status_code
 
     if 200 <= response.status_code < 400:
@@ -98,10 +98,10 @@ def getSearch(request: Request):
     trxIds = set()
     for trx in transactions:
         if "transaction" in qType:
-            if trx["trxType"] == q:
+            if q == "" or trx["trxType"] == q:
                 trxIds.add(trx["trxId"])
         if "account" in qType:
-            if trx["fromAccount"] == q or trx["toAccount"] == q:
+            if q == "" or trx["fromAccount"] == q or trx["toAccount"] == q:
                 trxIds.add(trx["trxId"])
     
     results = []
@@ -111,9 +111,8 @@ def getSearch(request: Request):
 
     tenant = request.headers.get("X-Tenant")
     return {
-        "tenant": tenant,
-        "results": results,
         "total": len(results),
+        "results": results,
     }
 
 
@@ -136,7 +135,6 @@ def postSearch(searchBody: SearchBodyModel, request: Request):
 
     tenant = request.headers.get('X-Tenant')
     return {
-        "tenant": tenant,
-        "results": results,
         "total": len(results),
+        "results": results,
     }

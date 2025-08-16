@@ -2,22 +2,22 @@ groups:
   - name: tenant-sli-rules
     rules:
       - record: sli:availability
-        expr: sum(rate(tenant_requests_total{path!="/metrics",status!~"[4|5].."}[5m])) / sum(rate(tenant_requests_total{path!="/metrics"}[5m])) * 100
+        expr: sum(rate(tenant_requests_total{path!="/metrics",status!~"[4|5].."}[30d])) / sum(rate(tenant_requests_total{path!="/metrics"}[30d])) * 100
 
       - record: sli:availability_per_service
-        expr: sum by (job) (rate(tenant_requests_total{path!="/metrics",status!~"[4|5].."}[5m])) / sum by (job) (rate(tenant_requests_total{path!="/metrics"}[5m])) * 100
+        expr: sum by (job) (rate(tenant_requests_total{path!="/metrics",status!~"[4|5].."}[30d])) / sum by (job) (rate(tenant_requests_total{path!="/metrics"}[30d])) * 100
 
       - record: sli:latency_ms:p95
-        expr: histogram_quantile(0.95, sum by(le) (rate(tenant_request_latency_seconds_bucket{status!~"[4|5]..",path!="/metrics"}[5m]))) * 1000
+        expr: histogram_quantile(0.95, sum by(le) (rate(tenant_request_latency_seconds_bucket{status!~"[4|5]..",path!="/metrics"}[30d]))) * 1000
 
       - record: sli:latency_ms:p99
-        expr: histogram_quantile(0.99, sum by(le) (rate(tenant_request_latency_seconds_bucket{status!~"[4|5]..",path!="/metrics"}[5m]))) * 1000
+        expr: histogram_quantile(0.99, sum by(le) (rate(tenant_request_latency_seconds_bucket{status!~"[4|5]..",path!="/metrics"}[30d]))) * 1000
 
       - record: sli:error_rate
-        expr: sum(rate(tenant_requests_total{path!="/metrics",status=~"[4|5].."}[5m])) / sum(rate(tenant_requests_total{path!="/metrics"}[5m])) * 100
+        expr: sum(rate(tenant_requests_total{path!="/metrics",status=~"[4|5].."}[30d])) / sum(rate(tenant_requests_total{path!="/metrics"}[30d])) * 100
 
       - record: sli:error_rate_per_service
-        expr: sum by (job) (rate(tenant_requests_total{path!="/metrics",status=~"[4|5].."}[5m])) / sum by (job) (rate(tenant_requests_total{path!="/metrics"}[5m])) * 100
+        expr: sum by (job) (rate(tenant_requests_total{path!="/metrics",status=~"[4|5].."}[30d])) / sum by (job) (rate(tenant_requests_total{path!="/metrics"}[30d])) * 100
 
   - name: tenant-slo-rules
     rules:
