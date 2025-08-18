@@ -12,7 +12,7 @@ args = parser.parse_args()
 def make_transfer_request() -> requests.Response:
     from_account = f"{random.randint(10000000, 99999999)}"
     to_account = f"{random.randint(10000000, 99999999)}"
-    amount = random.uniform(1.0, 100000.0)
+    amount = round(random.uniform(1.0, 100000.0), 2)
     trx_type = random.choice(["mudarabah", "musharakah", "murabaha", "qard hasanah", "ijarah", "sukuk"])
     time = datetime.now(timezone.utc).isoformat()
 

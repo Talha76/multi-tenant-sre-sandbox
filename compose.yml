@@ -66,3 +66,30 @@ services:
       - "3000:3000"
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
+
+  vegeta:
+    container_name: vegeta
+    image: peterevans/vegeta
+    stdin_open: true
+    tty: true
+    depends_on:
+      - nginx
+    volumes:
+      - ./vegeta/:/etc/vegeta/
+    entrypoint: /etc/vegeta/entrypoint.sh
+
+  cadvisor:
+    container_name: cAdvisor
+    image: google/cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    ports:
+      - 8080:8080
+    environment:
+      - --detach=true
+      - --privileged
+      - --device=/dev/kmsg

@@ -1,5 +1,5 @@
 data
 env
 __pycache__
-log
 .env
+vegeta/report*.json

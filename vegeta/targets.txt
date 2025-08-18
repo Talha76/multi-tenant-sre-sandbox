@@ -1,0 +1,8 @@
+GET http://nginx/search
+Host: alpha.local
+
+GET http://nginx/search
+Host: beta.local
+
+GET http://nginx/search
+Host: gamma.local
