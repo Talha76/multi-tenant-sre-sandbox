@@ -88,10 +88,11 @@
               },
               {
                 "color": "green",
-                "value": 99.9
+                "value": 0.999
               }
             ]
-          }
+          },
+          "unit": "percentunit"
         },
         "overrides": []
       },
@@ -123,7 +124,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum(\n    rate(\n        tenant_requests_total{path!=\"/metrics\",status!~\"[4|5]..\"}[$__rate_interval]\n    )\n)\n/\nsum(\n    rate(\n        tenant_requests_total{path!=\"/metrics\"}[$__rate_interval]\n    )\n) * 100",
+          "expr": "sum(\n    rate(\n        tenant_requests_total{path!=\"/metrics\",status!~\"[4|5]..\"}[$__rate_interval]\n    )\n)\n/\nsum(\n    rate(\n        tenant_requests_total{path!=\"/metrics\"}[$__rate_interval]\n    )\n)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "Availability"
@@ -187,10 +188,11 @@
               },
               {
                 "color": "green",
-                "value": 99.8999
+                "value": 0.999
               }
             ]
-          }
+          },
+          "unit": "percentunit"
         },
         "overrides": []
       },
@@ -221,11 +223,15 @@
             "type": "prometheus",
             "uid": "P1809F7CD0C75ACF3"
           },
+          "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "sum by (job) (\n    rate(\n        tenant_requests_total{path!=\"/metrics\",status!~\"[4|5]..\"}[$__rate_interval]\n    )\n)\n/\nsum by (job) (\n    rate(\n        tenant_requests_total{path!=\"/metrics\"}[$__rate_interval]\n    )\n) * 100",
+          "expr": "(\n  sum by (job) (\n    rate(\n      tenant_requests_total{path!=\"/metrics\", status!~\"[4|5]..\"}[$__rate_interval]\n    )\n  )\n  /\n  sum by (job) (\n    rate(\n      tenant_requests_total{path!=\"/metrics\"}[$__rate_interval]\n    )\n  )\n)",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
           "legendFormat": "__auto",
           "range": true,
-          "refId": "Availability"
+          "refId": "Availability",
+          "useBackend": false
         }
       ],
       "title": "Availability per service",
@@ -283,13 +289,10 @@
               {
                 "color": "green",
                 "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
-          }
+          },
+          "unit": "percentunit"
         },
         "overrides": []
       },
@@ -321,7 +324,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum by (path) (\n    rate(\n        tenant_requests_total{path!=\"/metrics\",status!~\"[4|5]..\"}[$__rate_interval]\n    )\n)\n/\nsum by (path) (\n    rate(\n        tenant_requests_total{path!=\"/metrics\"}[$__rate_interval]\n    )\n) * 100",
+          "expr": "sum by (path) (\n    rate(\n        tenant_requests_total{path!=\"/metrics\",status!~\"[4|5]..\"}[$__rate_interval]\n    )\n)\n/\nsum by (path) (\n    rate(\n        tenant_requests_total{path!=\"/metrics\"}[$__rate_interval]\n    )\n)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "Availability"
@@ -382,13 +385,10 @@
               {
                 "color": "green",
                 "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
-          }
+          },
+          "unit": "percentunit"
         },
         "overrides": []
       },
@@ -420,7 +420,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "sum by (tenant) (\n    rate(\n        tenant_requests_total{path!=\"/metrics\",status!~\"[4|5]..\"}[$__rate_interval]\n    )\n)\n/\nsum by (tenant) (\n    rate(\n        tenant_requests_total{path!=\"/metrics\"}[$__rate_interval]\n    )\n) * 100",
+          "expr": "sum by (tenant) (\n    rate(\n        tenant_requests_total{path!=\"/metrics\",status!~\"[4|5]..\"}[$__rate_interval]\n    )\n)\n/\nsum by (tenant) (\n    rate(\n        tenant_requests_total{path!=\"/metrics\"}[$__rate_interval]\n    )\n)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "Availability"
@@ -491,13 +491,10 @@
                   {
                     "color": "green",
                     "value": 0
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
                   }
                 ]
-              }
+              },
+              "unit": "reqps"
             },
             "overrides": []
           },
@@ -505,7 +502,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 1170
+            "y": 258
           },
           "id": 1,
           "options": {
@@ -590,13 +587,10 @@
                   {
                     "color": "green",
                     "value": 0
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
                   }
                 ]
-              }
+              },
+              "unit": "reqps"
             },
             "overrides": []
           },
@@ -604,7 +598,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 1170
+            "y": 258
           },
           "id": 3,
           "options": {
@@ -689,13 +683,10 @@
                   {
                     "color": "green",
                     "value": 0
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
                   }
                 ]
-              }
+              },
+              "unit": "reqps"
             },
             "overrides": []
           },
@@ -703,7 +694,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 1410
+            "y": 418
           },
           "id": 4,
           "options": {
@@ -794,7 +785,8 @@
                     "value": 80
                   }
                 ]
-              }
+              },
+              "unit": "reqps"
             },
             "overrides": []
           },
@@ -802,7 +794,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 1410
+            "y": 418
           },
           "id": 5,
           "options": {
@@ -902,13 +894,10 @@
                   {
                     "color": "green",
                     "value": 0
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
                   }
                 ]
-              }
+              },
+              "unit": "ms/req"
             },
             "overrides": []
           },
@@ -916,7 +905,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 1619
+            "y": 259
           },
           "id": 6,
           "options": {
@@ -940,7 +929,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum(\n  rate(\n    tenant_request_latency_seconds_sum{path!=\"/metrics\"}[$__rate_interval]\n  )\n)\n* 1000",
+              "expr": "sum(\n  rate(\n    tenant_request_latency_seconds_sum{path!=\"/metrics\"}[$__rate_interval]\n  )\n)\n/\nsum(\n  rate(\n    tenant_request_latency_seconds_count{path!=\"/metrics\"}[$__rate_interval]\n  )\n) * 1000",
               "legendFormat": "__auto",
               "range": true,
               "refId": "LPR"
@@ -1008,40 +997,16 @@
                     "value": 80
                   }
                 ]
-              }
+              },
+              "unit": "ms/req"
             },
-            "overrides": [
-              {
-                "__systemRef": "hideSeriesFrom",
-                "matcher": {
-                  "id": "byNames",
-                  "options": {
-                    "mode": "exclude",
-                    "names": [
-                      "/transfer"
-                    ],
-                    "prefix": "All except:",
-                    "readOnly": true
-                  }
-                },
-                "properties": [
-                  {
-                    "id": "custom.hideFrom",
-                    "value": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": true
-                    }
-                  }
-                ]
-              }
-            ]
+            "overrides": []
           },
           "gridPos": {
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 1619
+            "y": 259
           },
           "id": 12,
           "options": {
@@ -1065,7 +1030,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum by (path) (\n  rate(\n    tenant_request_latency_seconds_sum{path!=\"/metrics\"}[$__rate_interval]\n  )\n)\n* 1000",
+              "expr": "sum by (path) (\n  rate(\n    tenant_request_latency_seconds_sum{path!=\"/metrics\"}[$__rate_interval]\n  )\n)\n/\nsum by (path) (\n  rate(\n    tenant_request_latency_seconds_count{path!=\"/metrics\"}[$__rate_interval]\n  )\n)\n* 1000",
               "legendFormat": "__auto",
               "range": true,
               "refId": "LPR"
@@ -1141,7 +1106,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 1627
+            "y": 403
           },
           "id": 13,
           "options": {
@@ -1165,7 +1130,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum by (tenant) (\n  rate(\n    tenant_request_latency_seconds_sum{path!=\"/metrics\"}[$__rate_interval]\n  )\n) * 1000",
+              "expr": "sum by (tenant) (\n  rate(\n    tenant_request_latency_seconds_sum{path!=\"/metrics\"}[$__rate_interval]\n  )\n)\n/\nsum by (tenant) (\n  rate(\n    tenant_request_latency_seconds_count{path!=\"/metrics\"}[$__rate_interval]\n  )\n)\n* 1000",
               "legendFormat": "__auto",
               "range": true,
               "refId": "LPR"
@@ -1246,10 +1211,11 @@
               },
               {
                 "color": "red",
-                "value": 300
+                "value": 0.3
               }
             ]
-          }
+          },
+          "unit": "s"
         },
         "overrides": []
       },
@@ -1281,7 +1247,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(\n  0.95,\n  sum by (le) (\n    rate(tenant_request_latency_seconds_bucket{path!=\"/metrics\"}[$__rate_interval])\n  )\n) * 1000",
+          "expr": "histogram_quantile(\n  0.95,\n  sum by (le) (\n    rate(tenant_request_latency_seconds_bucket{path!=\"/metrics\"}[$__rate_interval])\n  )\n)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "p95 latency"
@@ -1348,7 +1314,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "s"
         },
         "overrides": []
       },
@@ -1380,7 +1347,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(\n  0.95,\n  sum by (le, tenant) (\n    rate(tenant_request_latency_seconds_bucket{path!=\"/metrics\"}[$__rate_interval])\n  )\n) * 1000",
+          "expr": "histogram_quantile(\n  0.95,\n  sum by (le, tenant) (\n    rate(tenant_request_latency_seconds_bucket{path!=\"/metrics\"}[$__rate_interval])\n  )\n)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "p95 latency"
@@ -1444,10 +1411,11 @@
               },
               {
                 "color": "red",
-                "value": 800
+                "value": 0.8
               }
             ]
-          }
+          },
+          "unit": "s"
         },
         "overrides": []
       },
@@ -1479,7 +1447,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(\n  0.99,\n  sum by (le) (\n    rate(tenant_request_latency_seconds_bucket{path!=\"/metrics\"}[$__rate_interval])\n  )\n) * 1000",
+          "expr": "histogram_quantile(\n  0.99,\n  sum by (le) (\n    rate(tenant_request_latency_seconds_bucket{path!=\"/metrics\"}[$__rate_interval])\n  )\n)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "p99 latency"
@@ -1546,7 +1514,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "s"
         },
         "overrides": []
       },
@@ -1578,7 +1547,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(\n  0.99,\n  sum by (le, tenant) (\n    rate(tenant_request_latency_seconds_bucket{path!=\"/metrics\"}[$__rate_interval])\n  )\n) * 1000",
+          "expr": "histogram_quantile(\n  0.99,\n  sum by (le, tenant) (\n    rate(tenant_request_latency_seconds_bucket{path!=\"/metrics\"}[$__rate_interval])\n  )\n)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "p99 latency"
@@ -1645,7 +1614,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "s"
         },
         "overrides": []
       },
@@ -1677,7 +1647,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(\n  0.95,\n  sum by (le, job) (\n    rate(tenant_request_latency_seconds_bucket{path!=\"/metrics\"}[$__rate_interval])\n  )\n) * 1000",
+          "expr": "histogram_quantile(\n  0.95,\n  sum by (le, job) (\n    rate(tenant_request_latency_seconds_bucket{path!=\"/metrics\"}[$__rate_interval])\n  )\n)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "p95 latency"
@@ -1744,7 +1714,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "s"
         },
         "overrides": []
       },
@@ -1776,7 +1747,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(\n  0.99,\n  sum by (le, job) (\n    rate(tenant_request_latency_seconds_bucket{path!=\"/metrics\"}[$__rate_interval])\n  )\n) * 1000",
+          "expr": "histogram_quantile(\n  0.99,\n  sum by (le, job) (\n    rate(tenant_request_latency_seconds_bucket{path!=\"/metrics\"}[$__rate_interval])\n  )\n)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "p99 latency"
@@ -1853,7 +1824,8 @@
                     "value": 80
                   }
                 ]
-              }
+              },
+              "unit": "percentunit"
             },
             "overrides": []
           },
@@ -1861,7 +1833,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 1173
+            "y": 261
           },
           "id": 16,
           "options": {
@@ -1885,7 +1857,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum(rate(tenant_requests_total{path!=\"/metrics\",status=~\"[4|5]..\"}[$__rate_interval]))\n/\nsum(rate(tenant_requests_total{path!=\"/metrics\"}[$__rate_interval]))\n* 100",
+              "expr": "sum(rate(tenant_requests_total{path!=\"/metrics\",status=~\"[4|5]..\"}[$__rate_interval]))\n/\nsum(rate(tenant_requests_total{path!=\"/metrics\"}[$__rate_interval]))",
               "legendFormat": "__auto",
               "range": true,
               "refId": "Error rate"
@@ -1952,7 +1924,8 @@
                     "value": 80
                   }
                 ]
-              }
+              },
+              "unit": "percentunit"
             },
             "overrides": []
           },
@@ -1960,7 +1933,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 1173
+            "y": 261
           },
           "id": 17,
           "options": {
@@ -1984,7 +1957,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum by (job) (rate(tenant_requests_total{path!=\"/metrics\",status=~\"[4|5]..\"}[$__rate_interval]))\n/\nsum by (job) (rate(tenant_requests_total{path!=\"/metrics\"}[$__rate_interval]))\n* 100",
+              "expr": "sum by (job) (rate(tenant_requests_total{path!=\"/metrics\",status=~\"[4|5]..\"}[$__rate_interval]))\n/\nsum by (job) (rate(tenant_requests_total{path!=\"/metrics\"}[$__rate_interval]))",
               "legendFormat": "__auto",
               "range": true,
               "refId": "Error rate"
@@ -2051,7 +2024,8 @@
                     "value": 80
                   }
                 ]
-              }
+              },
+              "unit": "percentunit"
             },
             "overrides": []
           },
@@ -2059,7 +2033,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 1197
+            "y": 269
           },
           "id": 18,
           "options": {
@@ -2083,7 +2057,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum by (path) (rate(tenant_requests_total{path!=\"/metrics\",status=~\"[4|5]..\"}[$__rate_interval]))\n/\nsum by (path) (rate(tenant_requests_total{path!=\"/metrics\"}[$__rate_interval]))\n* 100",
+              "expr": "sum by (path) (rate(tenant_requests_total{path!=\"/metrics\",status=~\"[4|5]..\"}[$__rate_interval]))\n/\nsum by (path) (rate(tenant_requests_total{path!=\"/metrics\"}[$__rate_interval]))",
               "legendFormat": "__auto",
               "range": true,
               "refId": "Error rate"
@@ -2150,7 +2124,8 @@
                     "value": 80
                   }
                 ]
-              }
+              },
+              "unit": "percentunit"
             },
             "overrides": []
           },
@@ -2158,7 +2133,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 1197
+            "y": 269
           },
           "id": 19,
           "options": {
@@ -2182,7 +2157,7 @@
                 "uid": "P1809F7CD0C75ACF3"
               },
               "editorMode": "code",
-              "expr": "sum by (tenant) (rate(tenant_requests_total{path!=\"/metrics\",status=~\"[4|5]..\"}[$__rate_interval]))\n/\nsum by (tenant) (rate(tenant_requests_total{path!=\"/metrics\"}[$__rate_interval]))\n* 100",
+              "expr": "sum by (tenant) (rate(tenant_requests_total{path!=\"/metrics\",status=~\"[4|5]..\"}[$__rate_interval]))\n/\nsum by (tenant) (rate(tenant_requests_total{path!=\"/metrics\"}[$__rate_interval]))",
               "legendFormat": "__auto",
               "range": true,
               "refId": "Error rate"
@@ -2197,7 +2172,7 @@
       "type": "row"
     },
     {
-      "collapsed": true,
+      "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -2205,325 +2180,324 @@
         "y": 45
       },
       "id": 20,
-      "panels": [
-        {
-          "datasource": {
-            "type": "loki",
-            "uid": "P982945308D3682D1"
-          },
-          "fieldConfig": {
-            "defaults": {},
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 46
-          },
-          "id": 21,
-          "options": {
-            "dedupStrategy": "none",
-            "enableInfiniteScrolling": false,
-            "enableLogDetails": true,
-            "prettifyLogMessage": true,
-            "showCommonLabels": false,
-            "showLabels": false,
-            "showTime": false,
-            "sortOrder": "Descending",
-            "wrapLogMessage": false
-          },
-          "pluginVersion": "12.1.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "loki",
-                "uid": "P982945308D3682D1"
-              },
-              "direction": "backward",
-              "editorMode": "builder",
-              "expr": "{service_name=\"payment-service\"}",
-              "queryType": "range",
-              "refId": "A"
-            }
-          ],
-          "title": "Payment service log panel",
-          "transparent": true,
-          "type": "logs"
-        },
-        {
-          "datasource": {
-            "type": "loki",
-            "uid": "P982945308D3682D1"
-          },
-          "fieldConfig": {
-            "defaults": {},
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 46
-          },
-          "id": 24,
-          "options": {
-            "dedupStrategy": "none",
-            "enableInfiniteScrolling": false,
-            "enableLogDetails": true,
-            "prettifyLogMessage": true,
-            "showCommonLabels": false,
-            "showLabels": false,
-            "showTime": false,
-            "sortOrder": "Descending",
-            "wrapLogMessage": false
-          },
-          "pluginVersion": "12.1.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "loki",
-                "uid": "P982945308D3682D1"
-              },
-              "direction": "backward",
-              "editorMode": "code",
-              "expr": "{service_name=\"payment-service\", status=~\"[4|5]..\"}",
-              "queryType": "range",
-              "refId": "A"
-            }
-          ],
-          "title": "Payment service error logs panel",
-          "transparent": true,
-          "type": "logs"
-        },
-        {
-          "datasource": {
-            "type": "loki",
-            "uid": "P982945308D3682D1"
-          },
-          "fieldConfig": {
-            "defaults": {},
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 54
-          },
-          "id": 23,
-          "options": {
-            "dedupStrategy": "none",
-            "enableInfiniteScrolling": false,
-            "enableLogDetails": true,
-            "prettifyLogMessage": true,
-            "showCommonLabels": false,
-            "showLabels": false,
-            "showTime": false,
-            "sortOrder": "Descending",
-            "wrapLogMessage": false
-          },
-          "pluginVersion": "12.1.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "loki",
-                "uid": "P982945308D3682D1"
-              },
-              "direction": "backward",
-              "editorMode": "builder",
-              "expr": "{service_name=\"search-service\"}",
-              "queryType": "range",
-              "refId": "A"
-            }
-          ],
-          "title": "Search service log panel",
-          "transparent": true,
-          "type": "logs"
-        },
-        {
-          "datasource": {
-            "type": "loki",
-            "uid": "P982945308D3682D1"
-          },
-          "fieldConfig": {
-            "defaults": {},
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 54
-          },
-          "id": 22,
-          "options": {
-            "dedupStrategy": "none",
-            "enableInfiniteScrolling": false,
-            "enableLogDetails": true,
-            "prettifyLogMessage": true,
-            "showCommonLabels": false,
-            "showLabels": false,
-            "showTime": false,
-            "sortOrder": "Descending",
-            "wrapLogMessage": false
-          },
-          "pluginVersion": "12.1.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "loki",
-                "uid": "P982945308D3682D1"
-              },
-              "direction": "backward",
-              "editorMode": "builder",
-              "expr": "{service_name=\"search-service\", status=~\"[4|5]..\"}",
-              "queryType": "range",
-              "refId": "A"
-            }
-          ],
-          "title": "Search service error logs panel",
-          "transparent": true,
-          "type": "logs"
-        },
-        {
-          "datasource": {
-            "type": "loki",
-            "uid": "P982945308D3682D1"
-          },
-          "fieldConfig": {
-            "defaults": {},
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 62
-          },
-          "id": 32,
-          "options": {
-            "dedupStrategy": "none",
-            "enableInfiniteScrolling": false,
-            "enableLogDetails": true,
-            "prettifyLogMessage": true,
-            "showCommonLabels": false,
-            "showLabels": false,
-            "showTime": false,
-            "sortOrder": "Descending",
-            "wrapLogMessage": false
-          },
-          "pluginVersion": "12.1.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "loki",
-                "uid": "P982945308D3682D1"
-              },
-              "direction": "backward",
-              "editorMode": "builder",
-              "expr": "{tenant=\"alpha\"}",
-              "queryType": "range",
-              "refId": "A"
-            }
-          ],
-          "title": "Alpha tenant logs",
-          "transparent": true,
-          "type": "logs"
-        },
-        {
-          "datasource": {
-            "type": "loki",
-            "uid": "P982945308D3682D1"
-          },
-          "fieldConfig": {
-            "defaults": {},
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 62
-          },
-          "id": 33,
-          "options": {
-            "dedupStrategy": "none",
-            "enableInfiniteScrolling": false,
-            "enableLogDetails": true,
-            "prettifyLogMessage": true,
-            "showCommonLabels": false,
-            "showLabels": false,
-            "showTime": false,
-            "sortOrder": "Descending",
-            "wrapLogMessage": false
-          },
-          "pluginVersion": "12.1.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "loki",
-                "uid": "P982945308D3682D1"
-              },
-              "direction": "backward",
-              "editorMode": "builder",
-              "expr": "{tenant=\"beta\"}",
-              "queryType": "range",
-              "refId": "A"
-            }
-          ],
-          "title": "Beta tenant logs",
-          "transparent": true,
-          "type": "logs"
-        },
-        {
-          "datasource": {
-            "type": "loki",
-            "uid": "P982945308D3682D1"
-          },
-          "fieldConfig": {
-            "defaults": {},
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 70
-          },
-          "id": 34,
-          "options": {
-            "dedupStrategy": "none",
-            "enableInfiniteScrolling": false,
-            "enableLogDetails": true,
-            "prettifyLogMessage": true,
-            "showCommonLabels": false,
-            "showLabels": false,
-            "showTime": false,
-            "sortOrder": "Descending",
-            "wrapLogMessage": false
-          },
-          "pluginVersion": "12.1.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "loki",
-                "uid": "P982945308D3682D1"
-              },
-              "direction": "backward",
-              "editorMode": "builder",
-              "expr": "{tenant=\"gamma\"}",
-              "queryType": "range",
-              "refId": "A"
-            }
-          ],
-          "title": "Gamma tenant logs",
-          "transparent": true,
-          "type": "logs"
-        }
-      ],
+      "panels": [],
       "title": "Logs",
       "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "P982945308D3682D1"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 46
+      },
+      "id": 21,
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "12.1.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P982945308D3682D1"
+          },
+          "direction": "backward",
+          "editorMode": "builder",
+          "expr": "{service_name=\"payment-service\"}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Payment service log panel",
+      "transparent": true,
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "P982945308D3682D1"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 46
+      },
+      "id": 24,
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "12.1.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P982945308D3682D1"
+          },
+          "direction": "backward",
+          "editorMode": "code",
+          "expr": "{service_name=\"payment-service\", status=~\"[4|5]..\"}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Payment service error logs panel",
+      "transparent": true,
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "P982945308D3682D1"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 54
+      },
+      "id": 23,
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "12.1.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P982945308D3682D1"
+          },
+          "direction": "backward",
+          "editorMode": "builder",
+          "expr": "{service_name=\"search-service\"}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Search service log panel",
+      "transparent": true,
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "P982945308D3682D1"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 54
+      },
+      "id": 22,
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "12.1.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P982945308D3682D1"
+          },
+          "direction": "backward",
+          "editorMode": "builder",
+          "expr": "{service_name=\"search-service\", status=~\"[4|5]..\"}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Search service error logs panel",
+      "transparent": true,
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "P982945308D3682D1"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 62
+      },
+      "id": 32,
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "12.1.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P982945308D3682D1"
+          },
+          "direction": "backward",
+          "editorMode": "builder",
+          "expr": "{tenant=\"alpha\"}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Alpha tenant logs",
+      "transparent": true,
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "P982945308D3682D1"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 62
+      },
+      "id": 33,
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "12.1.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P982945308D3682D1"
+          },
+          "direction": "backward",
+          "editorMode": "builder",
+          "expr": "{tenant=\"beta\"}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Beta tenant logs",
+      "transparent": true,
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "P982945308D3682D1"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 70
+      },
+      "id": 34,
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "12.1.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P982945308D3682D1"
+          },
+          "direction": "backward",
+          "editorMode": "builder",
+          "expr": "{tenant=\"gamma\"}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Gamma tenant logs",
+      "transparent": true,
+      "type": "logs"
     }
   ],
   "preload": false,
@@ -2534,7 +2508,7 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},

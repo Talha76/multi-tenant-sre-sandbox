@@ -104,6 +104,6 @@ def transfer(request: Request, transaction: TransactionModel):
 
     return {
         "trxId": transactionData["trxId"],
-        "status": "success",
+        "tenant": tenant,
         "timestamp": datetime.now(),
     }
