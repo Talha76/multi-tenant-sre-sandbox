@@ -102,10 +102,6 @@ def getTransactions():
 
 @app.get("/search")
 def getSearch(request: Request):
-    serverUpStatus = random.choices([0, 1], weights=[5, 995])[0]
-    if serverUpStatus == 0:
-        raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "Server is down")
-
     q = request.query_params.get('q', '')
     qType = request.query_params.get('type', 'transaction-account')
     if qType not in ["transaction-account", "transaction", "account"]:
@@ -130,10 +126,6 @@ def getSearch(request: Request):
 
 @app.post("/search")
 def postSearch(searchBody: SearchBodyModel, request: Request):
-    # serverUpStatus = random.choices([0, 1], weights=[5, 995])[0]
-    # if serverUpStatus == 0:
-    #     raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Server is down")
-
     results = []
     for trx in getTransactions():
         if searchBody.timeFrom <= trx["time"] <= searchBody.timeTo and \
