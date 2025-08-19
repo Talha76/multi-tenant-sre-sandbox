@@ -35,6 +35,7 @@ services:
     command:
       - "--web.enable-lifecycle"
       - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--web.enable-remote-write-receiver"
 
   loki:
     image: grafana/loki:latest
@@ -82,3 +83,15 @@ services:
       - --detach=true
       - --privileged
       - --device=/dev/kmsg
+
+  k6:
+    container_name: k6
+    image: grafana/k6
+    depends_on:
+      - nginx
+    volumes:
+      - ./grafana/scripts:/scripts:ro
+    environment:
+      - K6_OUT=experimental-prometheus-rw
+      - K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write
+    command: run -o experimental-prometheus-rw /scripts/script.js

@@ -294,7 +294,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 481
+            "y": 97
           },
           "id": 28,
           "options": {
@@ -393,7 +393,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 481
+            "y": 97
           },
           "id": 29,
           "options": {
@@ -506,7 +506,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 2
+            "y": 970
           },
           "id": 1,
           "options": {
@@ -605,7 +605,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 2
+            "y": 970
           },
           "id": 3,
           "options": {
@@ -704,7 +704,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 178
+            "y": 1210
           },
           "id": 4,
           "options": {
@@ -803,7 +803,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 178
+            "y": 1210
           },
           "id": 5,
           "options": {
@@ -917,7 +917,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 3
+            "y": 1419
           },
           "id": 6,
           "options": {
@@ -1042,7 +1042,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 3
+            "y": 1419
           },
           "id": 12,
           "options": {
@@ -1142,7 +1142,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 179
+            "y": 1427
           },
           "id": 13,
           "options": {
@@ -1453,7 +1453,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 140
+            "y": 12
           },
           "id": 9,
           "options": {
@@ -1552,7 +1552,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 140
+            "y": 12
           },
           "id": 10,
           "options": {
@@ -1651,7 +1651,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 148
+            "y": 20
           },
           "id": 30,
           "options": {
@@ -1750,7 +1750,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 148
+            "y": 20
           },
           "id": 31,
           "options": {
@@ -1863,7 +1863,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 5
+            "y": 973
           },
           "id": 16,
           "options": {
@@ -1962,7 +1962,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 5
+            "y": 973
           },
           "id": 17,
           "options": {
@@ -2061,7 +2061,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 29
+            "y": 997
           },
           "id": 18,
           "options": {
@@ -2160,7 +2160,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 29
+            "y": 997
           },
           "id": 19,
           "options": {
@@ -2199,7 +2199,7 @@
       "type": "row"
     },
     {
-      "collapsed": true,
+      "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -2207,190 +2207,324 @@
         "y": 5
       },
       "id": 20,
-      "panels": [
-        {
-          "datasource": {
-            "type": "loki",
-            "uid": "P982945308D3682D1"
-          },
-          "fieldConfig": {
-            "defaults": {},
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 6
-          },
-          "id": 21,
-          "options": {
-            "dedupStrategy": "none",
-            "enableInfiniteScrolling": false,
-            "enableLogDetails": true,
-            "prettifyLogMessage": true,
-            "showCommonLabels": false,
-            "showLabels": false,
-            "showTime": false,
-            "sortOrder": "Descending",
-            "wrapLogMessage": false
-          },
-          "pluginVersion": "12.1.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "loki",
-                "uid": "P982945308D3682D1"
-              },
-              "direction": "backward",
-              "editorMode": "builder",
-              "expr": "{service_name=\"payment\"}",
-              "queryType": "range",
-              "refId": "A"
-            }
-          ],
-          "title": "Payment service log panel",
-          "transparent": true,
-          "type": "logs"
-        },
-        {
-          "datasource": {
-            "type": "loki",
-            "uid": "P982945308D3682D1"
-          },
-          "fieldConfig": {
-            "defaults": {},
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 6
-          },
-          "id": 24,
-          "options": {
-            "dedupStrategy": "none",
-            "enableInfiniteScrolling": false,
-            "enableLogDetails": true,
-            "prettifyLogMessage": true,
-            "showCommonLabels": false,
-            "showLabels": false,
-            "showTime": false,
-            "sortOrder": "Descending",
-            "wrapLogMessage": false
-          },
-          "pluginVersion": "12.1.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "loki",
-                "uid": "P982945308D3682D1"
-              },
-              "direction": "backward",
-              "editorMode": "builder",
-              "expr": "{service_name=\"payment\", status=~\"[4|5]..\"}",
-              "queryType": "range",
-              "refId": "A"
-            }
-          ],
-          "title": "Payment service error logs panel",
-          "transparent": true,
-          "type": "logs"
-        },
-        {
-          "datasource": {
-            "type": "loki",
-            "uid": "P982945308D3682D1"
-          },
-          "fieldConfig": {
-            "defaults": {},
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 14
-          },
-          "id": 23,
-          "options": {
-            "dedupStrategy": "none",
-            "enableInfiniteScrolling": false,
-            "enableLogDetails": true,
-            "prettifyLogMessage": true,
-            "showCommonLabels": false,
-            "showLabels": false,
-            "showTime": false,
-            "sortOrder": "Descending",
-            "wrapLogMessage": false
-          },
-          "pluginVersion": "12.1.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "loki",
-                "uid": "P982945308D3682D1"
-              },
-              "direction": "backward",
-              "editorMode": "builder",
-              "expr": "{service_name=\"search\"}",
-              "queryType": "range",
-              "refId": "A"
-            }
-          ],
-          "title": "Search service log panel",
-          "transparent": true,
-          "type": "logs"
-        },
-        {
-          "datasource": {
-            "type": "loki",
-            "uid": "P982945308D3682D1"
-          },
-          "fieldConfig": {
-            "defaults": {},
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 14
-          },
-          "id": 22,
-          "options": {
-            "dedupStrategy": "none",
-            "enableInfiniteScrolling": false,
-            "enableLogDetails": true,
-            "prettifyLogMessage": true,
-            "showCommonLabels": false,
-            "showLabels": false,
-            "showTime": false,
-            "sortOrder": "Descending",
-            "wrapLogMessage": false
-          },
-          "pluginVersion": "12.1.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "loki",
-                "uid": "P982945308D3682D1"
-              },
-              "direction": "backward",
-              "editorMode": "builder",
-              "expr": "{service_name=\"search\", status=~\"[4|5]..\"}",
-              "queryType": "range",
-              "refId": "A"
-            }
-          ],
-          "title": "Search service error logs panel",
-          "transparent": true,
-          "type": "logs"
-        }
-      ],
+      "panels": [],
       "title": "Logs",
       "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "P982945308D3682D1"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 6
+      },
+      "id": 21,
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "12.1.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P982945308D3682D1"
+          },
+          "direction": "backward",
+          "editorMode": "builder",
+          "expr": "{service_name=\"payment\"}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Payment service log panel",
+      "transparent": true,
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "P982945308D3682D1"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 6
+      },
+      "id": 24,
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "12.1.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P982945308D3682D1"
+          },
+          "direction": "backward",
+          "editorMode": "builder",
+          "expr": "{service_name=\"payment\", status=~\"[4|5]..\"}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Payment service error logs panel",
+      "transparent": true,
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "P982945308D3682D1"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 14
+      },
+      "id": 23,
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "12.1.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P982945308D3682D1"
+          },
+          "direction": "backward",
+          "editorMode": "builder",
+          "expr": "{service_name=\"search\"}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Search service log panel",
+      "transparent": true,
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "P982945308D3682D1"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 14
+      },
+      "id": 22,
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "12.1.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P982945308D3682D1"
+          },
+          "direction": "backward",
+          "editorMode": "builder",
+          "expr": "{service_name=\"search\", status=~\"[4|5]..\"}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Search service error logs panel",
+      "transparent": true,
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "P982945308D3682D1"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 22
+      },
+      "id": 32,
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "12.1.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P982945308D3682D1"
+          },
+          "direction": "backward",
+          "editorMode": "builder",
+          "expr": "{tenant=\"alpha\"}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Alpha tenant logs",
+      "transparent": true,
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "P982945308D3682D1"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 22
+      },
+      "id": 33,
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "12.1.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P982945308D3682D1"
+          },
+          "direction": "backward",
+          "editorMode": "builder",
+          "expr": "{tenant=\"beta\"}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Beta tenant logs",
+      "transparent": true,
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "P982945308D3682D1"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 30
+      },
+      "id": 34,
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "12.1.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P982945308D3682D1"
+          },
+          "direction": "backward",
+          "editorMode": "builder",
+          "expr": "{tenant=\"gamma\"}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Gamma tenant logs",
+      "transparent": true,
+      "type": "logs"
     }
   ],
   "preload": false,
