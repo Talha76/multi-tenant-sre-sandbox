@@ -3,14 +3,14 @@ services:
     container_name: payment-service
     build: ./payment
     volumes:
-      - ./payment:/app:ro
+      - ./payment:/app
       - ./data:/data
 
   search:
     container_name: search-service
     build: ./search
     volumes:
-      - ./search:/app:ro
+      - ./search:/app
       - ./data:/data
 
   nginx:
@@ -55,6 +55,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./promtail.yml:/etc/promtail/config.yml:ro
+      - ./search/logs.log:/services/search-logs.log:ro
+      - ./payment/logs.log:/services/payment-logs.log:ro
     command:
       - -config.file=/etc/promtail/config.yml
       - --server.enable-runtime-reload

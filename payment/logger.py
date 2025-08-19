@@ -12,7 +12,8 @@ def json_sink(message):
         "status": record["extra"].get("status", "-1"),
         "duration": record["extra"].get("duration", 0),
     }
-    print(json.dumps(log_entry, ensure_ascii=False))
+    with open("./logs.log", "a") as f:
+        f.write(json.dumps(log_entry, ensure_ascii=False) + "\n")
 
 logger.remove()
 logger.add(json_sink, serialize=True)

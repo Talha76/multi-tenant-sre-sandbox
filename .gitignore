@@ -7,3 +7,4 @@ vegeta/results
 prometheus-data
 loki-data
 restic-backup
+logs.log
