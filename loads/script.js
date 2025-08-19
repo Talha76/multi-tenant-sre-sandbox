@@ -73,7 +73,7 @@ export default function () {
     if (randInt(0, 1))
       url += `q=${q}`;
     if (randInt(0, 1)) {
-      if (url[-1] !== '?')
+      if (url[url.length - 1] !== '?')
         url += '&';
       url += `type=${type}`;
     }
