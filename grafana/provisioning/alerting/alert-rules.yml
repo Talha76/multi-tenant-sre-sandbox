@@ -45,7 +45,7 @@ groups:
                 conditions:
                     - evaluator:
                         params:
-                            - 99.5
+                            - 99.9
                             - 0
                         type: lt
                       operator:
@@ -122,7 +122,7 @@ groups:
                 conditions:
                     - evaluator:
                         params:
-                            - 99.5
+                            - 99.9
                             - 0
                         type: lt
                       operator:
@@ -135,7 +135,7 @@ groups:
                       type: query
                       unloadEvaluator:
                         params:
-                            - 99.5
+                            - 99.9
                             - 0
                         type: gt
                 datasource:
@@ -194,7 +194,7 @@ groups:
                 conditions:
                     - evaluator:
                         params:
-                            - 5
+                            - 300
                             - 0
                         type: gt
                       operator:
@@ -207,7 +207,7 @@ groups:
                       type: query
                       unloadEvaluator:
                         params:
-                            - 5
+                            - 300
                             - 0
                         type: lt
                 datasource:
@@ -266,7 +266,7 @@ groups:
                 conditions:
                     - evaluator:
                         params:
-                            - 350
+                            - 800
                             - 0
                         type: gt
                       operator:
@@ -279,7 +279,7 @@ groups:
                       type: query
                       unloadEvaluator:
                         params:
-                            - 350
+                            - 800
                             - 0
                         type: lt
                 datasource:

@@ -16,11 +16,37 @@ function randInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function randChoice(arr) {
-  return arr[randInt(0, arr.length)];
+function randChoice(arr, weights) {
+    if (!weights) {
+        return arr[randInt(0, arr.length)];
+    }
+    const totalWeight = weights.reduce((acc, w) => acc + w, 0);
+    const rand = Math.random() * totalWeight;
+    let cumulativeWeight = 0;
+
+    for (let i = 0; i < arr.length; i++) {
+        cumulativeWeight += weights[i];
+        if (rand < cumulativeWeight) {
+            return arr[i];
+        }
+    }
+
+    return arr[arr.length - 1]; // Fallback
 }
 
+const FAULT_RATE = parseFloat(__ENV.FAULT_RATE || 0);
+const EXTRA_LATENCY_MS = parseInt(__ENV.EXTRA_LATENCY_MS || 0);
+
 export default function () {
+  if (EXTRA_LATENCY_MS > 0) {
+    sleep(EXTRA_LATENCY_MS / 1000);
+  }
+  if (Math.random() < FAULT_RATE) {
+    console.log("Simulated Failure");
+    http.get('http://nginx/fail');
+    return;
+  }
+
   const host = randChoice(['alpha', 'beta', 'gamma']);
   const trxType = randChoice(["mudarabah", "musharakah", "murabaha", "qard hasanah", "ijarah", "sukuk"]);
   const account = randInt(10000000, 99999999);
@@ -39,7 +65,7 @@ export default function () {
     }
   };
 
-  const reqType = randInt(0, 3);
+  const reqType = randChoice([0, 1, 2], [495, 495, 10]);
   if (reqType === 0) { // GET search req
     const type = randChoice(['transaction', 'account', null]);
     const q = type === 'transaction' ? trxType : account;
