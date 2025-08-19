@@ -67,17 +67,6 @@ services:
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
 
-  vegeta:
-    container_name: vegeta
-    image: peterevans/vegeta
-    stdin_open: true
-    tty: true
-    depends_on:
-      - nginx
-    volumes:
-      - ./vegeta/:/etc/vegeta/
-    entrypoint: /etc/vegeta/entrypoint.sh
-
   cadvisor:
     container_name: cAdvisor
     image: google/cadvisor
@@ -93,3 +82,24 @@ services:
       - --detach=true
       - --privileged
       - --device=/dev/kmsg
+
+  vegeta:
+    container_name: vegeta
+    image: peterevans/vegeta
+    stdin_open: true
+    tty: true
+    depends_on:
+      - nginx
+    volumes:
+      - ./vegeta/:/etc/vegeta/
+    entrypoint: /etc/vegeta/entrypoint.sh
+
+  vegeta-exporter:
+    container_name: vegeta-exporter
+    build: ./vegeta-live-exporter
+    depends_on:
+      - vegeta
+    volumes:
+      - ./vegeta/results:/etc/vegeta/results:ro
+      - ./vegeta-live-exporter:/app:ro
+    command: python /app/vegeta_live_exporter.py

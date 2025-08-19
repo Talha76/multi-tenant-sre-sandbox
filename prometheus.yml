@@ -10,5 +10,9 @@ scrape_configs:
     static_configs:
       - targets: ["search:8001"]
 
+  - job_name: vegeta-exporter
+    static_configs:
+      - targets: ["vegeta-exporter:9100"]
+
 rule_files:
   - /etc/prometheus/prometheus-rules.yml

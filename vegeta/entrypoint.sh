@@ -13,6 +13,3 @@ vegeta attack -rate 800 -duration 10s -targets /etc/vegeta/targets.txt -output /
 vegeta report -every 1s -type json -output /etc/vegeta/reports/report-800.json /etc/vegeta/results/result-800.bin
 
 echo "All tests completed."
-
-# Keep the container running
-tail -f /dev/null
