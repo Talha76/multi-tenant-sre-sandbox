@@ -4,3 +4,6 @@ __pycache__
 .env
 vegeta/reports
 vegeta/results
+prometheus-data
+loki-data
+restic-backup
