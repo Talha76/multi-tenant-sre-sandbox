@@ -97,10 +97,10 @@ services:
     depends_on:
       - nginx
     volumes:
-      - ./grafana/scripts:/scripts:ro
+      - ./loads:/loads:ro
     environment:
       - K6_OUT=experimental-prometheus-rw
       - K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write
       - FAULT_RATE=0.02
       - EXTRA_LATENCY_MS=200
-    command: run -o experimental-prometheus-rw /scripts/script.js
+    command: run -o experimental-prometheus-rw /loads/script.js
