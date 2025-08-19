@@ -39,4 +39,4 @@ elif [[ "$1" == "start" || "$1" == "restart" || "$1" == "up" ]]; then
     rm -f ./grafana/provisioning/alerting/contact_points-template.yml
 fi
 
-docker compose "$@"
+docker compose -f compose.sre.yml "$@"

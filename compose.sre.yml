@@ -32,6 +32,7 @@ services:
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ./prometheus-rules.yml:/etc/prometheus/prometheus-rules.yml:ro
+      - ./prometheus-data:/prometheus
     command:
       - "--web.enable-lifecycle"
       - "--config.file=/etc/prometheus/prometheus.yml"
@@ -40,6 +41,10 @@ services:
   loki:
     image: grafana/loki:latest
     container_name: loki
+    volumes:
+      - ./loki-data:/loki
+    ports:
+      - 3100:3100
     command: -config.file=/etc/loki/local-config.yaml
 
   promtail:
