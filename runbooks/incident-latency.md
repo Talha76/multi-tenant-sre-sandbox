@@ -12,7 +12,7 @@
 - **Source:**
   - Prometheus metrics:
 
-    ```json
+    ```any
     histogram_quantile(
       0.95, 
       sum by (le) (
@@ -40,7 +40,7 @@
    - For `payment-service`:
      - in Grafana Explore (Loki):
 
-     ```json
+     ```any
      {service_name="payment-service",status=~"[4|5]..",path!="/metrics"} 
      | json 
      | line_format "tenant={{.tenant}}, path={{.path}}"
@@ -51,7 +51,7 @@
    - For `search-service`:
      - in Grafana Explore (Loki):
 
-     ```json
+     ```any
      {service_name="search-service",status=~"[4|5]..",path!="/metrics"} 
      | json 
      | line_format "tenant={{.tenant}}, path={{.path}}"
