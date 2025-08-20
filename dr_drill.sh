@@ -79,4 +79,4 @@ echo -e "${GREEN}Approximate RPO:${NC}"
 echo "Prometheus metrics gap: ${RPO_PROM}s"
 echo "Loki logs gap: ${RPO_LOKI}s"
 
-echo -e "${GREEN}Mini DR Drill completed.${NC}"
+echo -e "${GREEN}DR Drill completed.${NC}"
